@@ -36,8 +36,8 @@ class PythonRunner:
             leadingWhitespace = self.getLeadingWhitespaceForLine(i+1)
             housekeepingCommands = ["{0}__runner__.lineNumber = {1}".format(leadingWhitespace, i+1),
                                     leadingWhitespace+"__runner__.variables = {}", 
-                                    leadingWhitespace+"for __name__ in [__name__ for __name__ in dir() if __name__ != 'self' and __name__ != '__name__']:",
-                                    leadingWhitespace+"\t__runner__.variables[__name__]=eval(__name__)"]
+                                    leadingWhitespace+"for __var_name__ in [__var_name__ for __var_name__ in dir() if __var_name__ != 'self' and __var_name__ != '__var_name__']:",
+                                    leadingWhitespace+"\t__runner__.variables[__var_name__]=eval(__var_name__)"]
             newIndex = i+1+len(housekeepingCommands)*i
             newLines[newIndex:newIndex] = housekeepingCommands
         newLines[0] = "def {0}(__runner__):".format(self.functionName)

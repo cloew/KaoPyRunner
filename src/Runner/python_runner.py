@@ -59,7 +59,7 @@ class PythonRunner:
         """ Store the current state of the function """
         self.functionStates[self.lineNumber] = {}
         for varName in variables:
-            if self.previousState is None or varName not in self.previousState:
+            if self.previousState is None or varName not in self.previousState or self.previousState[varName] != variables[varName]:
                 self.functionStates[self.lineNumber][varName] = variables[varName]
         self.lineNumber = lineNumber
                 

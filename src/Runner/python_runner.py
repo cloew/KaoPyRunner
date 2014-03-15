@@ -1,6 +1,4 @@
 
-lineNumber = 0
-
 class PythonRunner:
     """ Represents a runner of a Python class """
     
@@ -26,10 +24,10 @@ class PythonRunner:
                 leadingWhitespace = nextLine[:len(nextLine)-len(nextLine.lstrip())]
             else:
                 leadingWhitespace = "\t"
-            newLines[i+i+1:i+i+1] = ["{0}lineNumber = {1}".format(leadingWhitespace, i+1)]
-        newLines[1:1] = ["\tglobal lineNumber"]
+            newLines[i+i+1:i+i+1] = ["{0}self.lineNumber = {1}".format(leadingWhitespace, i+1)]
+        newLines[0] = "def {0}(self):".format(self.functionName)
         
         wholeFunction = "\n".join(newLines)
         exec(wholeFunction)
-        exec("returnValue = {0}()".format(self.functionName))
-        return lineNumber, returnValue
+        exec("returnValue = {0}(self)".format(self.functionName))
+        return self.lineNumber, returnValue

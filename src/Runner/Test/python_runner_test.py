@@ -4,6 +4,7 @@ import unittest
 
 EMPTY_METHOD = ["def testMethod():", "\tpass"]
 RETURN_1_METHOD = ["def testMethod():", "\treturn 1"]
+RETURN_STRING_METHOD = ["def testMethod():", "\treturn 'Blah'"]
 
 class processFunction(unittest.TestCase):
     """ Test cases of processFunction """
@@ -21,9 +22,16 @@ class processFunction(unittest.TestCase):
         results = self.runner.processFunction()
         self.assertEquals("return 1", results[1], "Should have the return statement at the proper line")
         self.assertEquals(1, len(results), "Should only have the return statement")
+        
+    def handlesReturnValue_String(self):
+        """ Test that an explicit return value is added properly """
+        self.runner = PythonRunner(RETURN_STRING_METHOD)
+        results = self.runner.processFunction()
+        self.assertEquals("return 'Blah'", results[1], "Should have the return statement at the proper line")
+        self.assertEquals(1, len(results), "Should only have the return statement")
 
 # Collect all test cases in this class
-testcasesProcessFunction = ["handlesReturnValue_Default", "handlesReturnValue_Explicit"]
+testcasesProcessFunction = ["handlesReturnValue_Default", "handlesReturnValue_Explicit", "handlesReturnValue_String"]
 suiteProcessFunction = unittest.TestSuite(map(processFunction, testcasesProcessFunction))
 
 ##########################################################

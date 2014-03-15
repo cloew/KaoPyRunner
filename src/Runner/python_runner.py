@@ -11,6 +11,8 @@ class PythonRunner:
     def processFunction(self):
         """ Processes the given function """
         returnValue = self.runFunction()
+        if type(returnValue) == str:
+            returnValue = "'{0}'".format(returnValue)
         return {1:"return {0}".format(returnValue)}
         
     def runFunction(self):

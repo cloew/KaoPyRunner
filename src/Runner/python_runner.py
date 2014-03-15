@@ -34,12 +34,13 @@ class PythonRunner:
         newLines = list(self.functionLines)
         for i in range(len(self.functionLines)):
             leadingWhitespace = self.getLeadingWhitespaceForLine(i+1)
-            housekeepingCommands = ["{0}self.lineNumber = {1}".format(leadingWhitespace, i+1),
-                                    leadingWhitespace+"self.variables = {}", leadingWhitespace+"for name in [name for name in dir() if name != 'self' and name != 'name']:",
-                                    leadingWhitespace+"\tself.variables[name]=eval(name)"]
+            housekeepingCommands = ["{0}__runner__.lineNumber = {1}".format(leadingWhitespace, i+1),
+                                    leadingWhitespace+"__runner__.variables = {}", 
+                                    leadingWhitespace+"for __name__ in [__name__ for __name__ in dir() if __name__ != 'self' and __name__ != '__name__']:",
+                                    leadingWhitespace+"\t__runner__.variables[__name__]=eval(__name__)"]
             newIndex = i+1+len(housekeepingCommands)*i
             newLines[newIndex:newIndex] = housekeepingCommands
-        newLines[0] = "def {0}(self):".format(self.functionName)
+        newLines[0] = "def {0}(__runner__):".format(self.functionName)
         return newLines
         
     def getLeadingWhitespaceForLine(self, index):

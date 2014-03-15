@@ -13,7 +13,7 @@ class PythonRunner:
         returnValue = self.runFunction()
         if type(returnValue) == str:
             returnValue = "'{0}'".format(returnValue)
-        return {1:"return {0}".format(returnValue)}
+        return {len(self.functionLines)-1:"return {0}".format(returnValue)}
         
     def runFunction(self):
         """ Run the function """

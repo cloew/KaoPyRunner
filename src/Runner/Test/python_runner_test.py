@@ -10,6 +10,7 @@ EARLY_RETURN_METHOD = ["def testMethod():", "\tif True:", "\t\treturn 2", "\t", 
 VAR_INIT_METHOD = ["def testMethod():", "\ti=0"]
 MULTI_LINE_VAR_INIT_METHOD = ["def testMethod():", "\t", "\t", "\ti=0"]
 MULT_VAR_INITS_METHOD = ["def testMethod():", "\ti=0", "\tj=2"]
+STRING_VAR_INIT_METHOD = ["def testMethod():", "\ti='Blah'"]
 
 class processFunction(unittest.TestCase):
     """ Test cases of processFunction """
@@ -36,6 +37,13 @@ class processFunction(unittest.TestCase):
         
         self.assertEquals("i = 0", results[1], "Should have the proper variable statement")
         self.assertEquals("j = 2", results[2], "Should have the proper variable statement")
+        
+    def handlesVariables_StringValue(self):
+        """ Test that the variable initializations are added properly """
+        self.runner = PythonRunner(STRING_VAR_INIT_METHOD)
+        results = self.runner.processFunction()
+        
+        self.assertEquals("i = 'Blah'", results[1], "Should have the proper variable statement")
         
     def handlesReturnValue_Default(self):
         """ Test that the default return value is added properly """
@@ -76,7 +84,7 @@ class processFunction(unittest.TestCase):
         self.assertEquals("return 2", results[expectedLine], "Should have the proper return statement")
 
 # Collect all test cases in this class
-testcasesProcessFunction = ["handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations",
+testcasesProcessFunction = ["handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations", "handlesVariables_StringValue",
                             "handlesReturnValue_Default", "handlesReturnValue_Explicit", "handlesReturnValue_String", "handlesReturnValue_MultiLine", "handlesReturnValue_EarlyReturn"]
 suiteProcessFunction = unittest.TestSuite(map(processFunction, testcasesProcessFunction))
 

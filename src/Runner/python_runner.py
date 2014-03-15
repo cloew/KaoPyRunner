@@ -14,15 +14,13 @@ class PythonRunner:
     def processFunction(self):
         """ Processes the given function """
         lastLineNumber, returnValue = self.runFunction()
-        if type(returnValue) == str:
-            returnValue = "'{0}'".format(returnValue)
             
         results = {}
         for lineNumber in self.functionStates:
             functionState = self.functionStates[lineNumber]
             for varName in functionState:
-                results[lineNumber] = "{0} = {1}".format(varName, functionState[varName])
-        results[lastLineNumber] = "return {0}".format(returnValue)
+                results[lineNumber] = "{0} = {1}".format(varName, self.getValue(functionState[varName]))
+        results[lastLineNumber] = "return {0}".format(self.getValue(returnValue))
         return results
         
     def runFunction(self):
@@ -66,3 +64,9 @@ class PythonRunner:
         self.lineNumber = lineNumber
                 
         self.previousState = variables
+        
+    def getValue(self, value):
+        """ Return a proper form of the value """
+        if type(value) == str:
+            value = "'{0}'".format(value)
+        return value

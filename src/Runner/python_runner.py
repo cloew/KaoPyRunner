@@ -13,7 +13,12 @@ class PythonRunner:
         lineNumber, returnValue = self.runFunction()
         if type(returnValue) == str:
             returnValue = "'{0}'".format(returnValue)
-        return {lineNumber:"return {0}".format(returnValue)}
+            
+        results = {}
+        for varName in self.variables:
+            results[1] = "{0} = {1}".format(varName, self.variables[varName])
+        results[lineNumber] = "return {0}".format(returnValue)
+        return results
         
     def runFunction(self):
         """ Run the function """
@@ -29,7 +34,11 @@ class PythonRunner:
         newLines = list(self.functionLines)
         for i in range(len(self.functionLines)):
             leadingWhitespace = self.getLeadingWhitespaceForLine(i+1)
-            newLines[i+i+1:i+i+1] = ["{0}self.lineNumber = {1}".format(leadingWhitespace, i+1)]
+            housekeepingCommands = ["{0}self.lineNumber = {1}".format(leadingWhitespace, i+1),
+                                    leadingWhitespace+"self.variables = {}", leadingWhitespace+"for name in [name for name in dir() if name != 'self' and name != 'name']:",
+                                    leadingWhitespace+"\tself.variables[name]=eval(name)"]
+            newIndex = i+1+len(housekeepingCommands)*i
+            newLines[newIndex:newIndex] = housekeepingCommands
         newLines[0] = "def {0}(self):".format(self.functionName)
         return newLines
         

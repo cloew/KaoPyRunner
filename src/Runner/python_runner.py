@@ -4,7 +4,9 @@ class PythonRunner:
     
     def __init__(self, functionLines):
         """ Initialize the Python Runner """
-        self.functionLines = functionLines[1:]
+        self.functionHeader = functionLines[0]
+        self.functionName = self.functionHeader.replace('def', '').strip().split('(')[0]
+        self.functionLines = functionLines
         
     def processFunction(self):
         """ Processes the given function """
@@ -13,5 +15,7 @@ class PythonRunner:
         
     def runFunction(self):
         """ Run the function """
-        wholeFunction = "\n".join([line.lstrip() for line in self.functionLines])
+        wholeFunction = "\n".join(self.functionLines)
         exec(wholeFunction)
+        exec("returnValue = {0}()".format(self.functionName))
+        return returnValue

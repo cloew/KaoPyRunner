@@ -23,7 +23,7 @@ class PythonFunction:
             housekeepingLines = houseKeepingGenerator(i+1)
             newIndex = i+1+len(housekeepingLines)*i
             newLines[newIndex:newIndex] = [leadingWhitespace+line for line in housekeepingLines]
-        newLines[0] = "def {0}(__runner__):".format(self.name)
+        newLines[0] = self.buildHeaderWithHousekeeping()
         return newLines
         
     def getLeadingWhitespaceForLine(self, index):
@@ -35,3 +35,8 @@ class PythonFunction:
         else:
             leadingWhitespace = "\t"
         return leadingWhitespace
+        
+    def buildHeaderWithHousekeeping(self):
+        """ Return the function header with housekeeping built-in """
+        argumentString = ", ".join(self.arguments+['__runner__'])
+        return "def {0}({1}):".format(self.name, argumentString)

@@ -4,9 +4,16 @@ class PythonFunction:
     
     def __init__(self, functionLines):
         """ Initialize the Python Function with the lines of the function """
-        self.header = functionLines[0]
-        self.name = self.header.replace('def', '').strip().split('(')[0]
-        self.body = functionLines[1:]
+        if functionLines is not None:
+            self.header = functionLines[0]
+            self.body = functionLines[1:]
+            self.parseHeader(self.header)
+        
+    def parseHeader(self, header):
+        """ Parse the header """
+        leftHeader, rightHeader = header.split('(')
+        self.name = leftHeader.replace('def', '').strip()
+        self.arguments = [argument.strip() for argument in rightHeader.split(')')[0].split(',') if argument.strip() != '']
         
     def generateFunctionWithHouseKeeping(self, houseKeepingGenerator):
         """ Generate the function with housekeeping inserted for introspection """

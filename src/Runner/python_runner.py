@@ -3,13 +3,14 @@ from Runner.python_function import PythonFunction
 class PythonRunner:
     """ Represents a runner of a Python class """
     
-    def __init__(self, functionLines):
+    def __init__(self, functionLines, parameters=[]):
         """ Initialize the Python Runner """
         self.function = PythonFunction(functionLines)
         
         self.previousState = None
         self.functionStates = {}
         self.lineNumber = 0
+        self.parameters = parameters
         
     def processFunction(self):
         """ Processes the given function """
@@ -31,10 +32,22 @@ class PythonRunner:
         """ Run the function """
         newLines = self.function.generateFunctionWithHouseKeeping(self.generateHousekeepingLines)
         wholeFunction = "\n".join(newLines)
+        callFunctionString = self.getFunctionCallString()
         
         exec(wholeFunction)
-        exec("returnValue = {0}(self)".format(self.function.name))
+        exec(callFunctionString)
         return self.lineNumber, returnValue
+        
+    def getFunctionCallString(self):
+        """ Return the Function Call String """
+        if self.function.needsArguments():
+            return "returnValue = {0}({1}, self)".format(self.function.name, self.getFunctionParameterString())
+        else:
+            return "returnValue = {0}(self)".format(self.function.name)
+        
+    def getFunctionParameterString(self):
+        """ Return the Function Parameter String """
+        return ", ".join([str(self.getValue(parameter)) for parameter in self.parameters])
         
     def generateHousekeepingLines(self, lineNumber):
         """ Generate the housekeeping lines for the current line """

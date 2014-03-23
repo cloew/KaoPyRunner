@@ -13,9 +13,32 @@ MULT_VAR_INITS_METHOD = ["def testMethod():", "\ti=0", "\tj=2"]
 STRING_VAR_INIT_METHOD = ["def testMethod():", "\ti='Blah'"]
 VAR_MOD_METHOD = ["def testMethod():", "\ti=0", "\ti=2"]
 MULTI_VARS_METHOD = ["def testMethod():", "\ti,j=(0,1)"]
+SINGLE_ARG_METHOD = ["def testMethod(i):", "\ti+=2"]
+MULTIPLE_ARGS_METHOD = ["def testMethod(i, j):", "\ti+=2"]
 
 class processFunction(unittest.TestCase):
     """ Test cases of processFunction """
+    
+    def handleArguments_NoArguments(self):
+        """ Test that no argument values works properly. Smoke Test mostly """
+        self.runner = PythonRunner(VAR_INIT_METHOD)
+        results = self.runner.processFunction()
+        
+        self.assertEquals(["i = 0"], results[1], "Should have the proper variable statement")
+        
+    def handleArguments_SingleArgument(self):
+        """ Test that single argument value works properly. """
+        self.runner = PythonRunner(SINGLE_ARG_METHOD, parameters=[1])
+        results = self.runner.processFunction()
+        
+        self.assertEquals(["i = 1"], results[0], "Should have the proper variable statement")
+        
+    def handleArguments_MultipleArguments(self):
+        """ Test that mulitple argument values works properly. """
+        self.runner = PythonRunner(MULTIPLE_ARGS_METHOD, parameters=[1, 2])
+        results = self.runner.processFunction()
+        
+        self.assertEquals(["i = 1", "j = 2"], results[0], "Should have the proper variable statement")
         
     def handlesVariables_Initialization(self):
         """ Test that the variable initialization is added properly """
@@ -100,7 +123,8 @@ class processFunction(unittest.TestCase):
         self.assertEquals(["return 2"], results[expectedLine], "Should have the proper return statement")
 
 # Collect all test cases in this class
-testcasesProcessFunction = ["handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations", "handlesVariables_StringValue",
+testcasesProcessFunction = ["handleArguments_NoArguments", "handleArguments_SingleArgument", "handleArguments_MultipleArguments",
+                            "handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations", "handlesVariables_StringValue",
                             "handlesVariables_Modification", "handlesVariables_Multiple",
                             "handlesReturnValue_Default", "handlesReturnValue_Explicit", "handlesReturnValue_String", "handlesReturnValue_MultiLine", "handlesReturnValue_EarlyReturn"]
 suiteProcessFunction = unittest.TestSuite(map(processFunction, testcasesProcessFunction))

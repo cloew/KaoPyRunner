@@ -40,3 +40,7 @@ class PythonFunction:
         """ Return the function header with housekeeping built-in """
         argumentString = ", ".join(self.arguments+['__runner__'])
         return "def {0}({1}):".format(self.name, argumentString)
+        
+    def needsArguments(self):
+        """ Return if the function needs arguments """
+        return len(self.arguments) > 0

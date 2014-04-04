@@ -19,7 +19,7 @@ class findFunction(unittest.TestCase):
         
     def inFunction(self):
         """ Test that it returns None when not in a function """
-        function = self.finder.findFunction(TEST_METHOD, 1, 0)
+        function = self.finder.findFunction(TEST_METHOD, 3, 0)
         
         self.assertIsNot(None, function, 'The function should not be None when within a function body')
         self.assertEquals(TEST_METHOD[1:], function, 'The function should contain the proper lines')

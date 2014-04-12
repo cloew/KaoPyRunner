@@ -15,6 +15,7 @@ VAR_MOD_METHOD = ["def testMethod():", "\ti=0", "\ti=2"]
 MULTI_VARS_METHOD = ["def testMethod():", "\ti,j=(0,1)"]
 SINGLE_ARG_METHOD = ["def testMethod(i):", "\ti+=2"]
 MULTIPLE_ARGS_METHOD = ["def testMethod(i, j):", "\ti+=2"]
+MIXED_WHITESPACE_METHOD = ["def testMethod():", "\tif True:", "\t    return 2", "\t", "    return None"]
 
 class processFunction(unittest.TestCase):
     """ Test cases of processFunction """
@@ -121,12 +122,21 @@ class processFunction(unittest.TestCase):
         
         expectedLine = 2
         self.assertEquals(["return 2"], results[expectedLine], "Should have the proper return statement")
+        
+    def handlesMixedWhitespace(self):
+        """ Test that the function Prcessor can handle mixed whitespace """
+        self.runner = PythonRunner(MIXED_WHITESPACE_METHOD)
+        try:
+            results = self.runner.processFunction()
+        except IndentationError as error:
+            self.fail('An Indentation Error should not have occured')
 
 # Collect all test cases in this class
 testcasesProcessFunction = ["handleArguments_NoArguments", "handleArguments_SingleArgument", "handleArguments_MultipleArguments",
                             "handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations", "handlesVariables_StringValue",
                             "handlesVariables_Modification", "handlesVariables_Multiple",
-                            "handlesReturnValue_Default", "handlesReturnValue_Explicit", "handlesReturnValue_String", "handlesReturnValue_MultiLine", "handlesReturnValue_EarlyReturn"]
+                            "handlesReturnValue_Default", "handlesReturnValue_Explicit", "handlesReturnValue_String", "handlesReturnValue_MultiLine", "handlesReturnValue_EarlyReturn",
+                            "handlesMixedWhitespace"]
 suiteProcessFunction = unittest.TestSuite(map(processFunction, testcasesProcessFunction))
 
 ##########################################################

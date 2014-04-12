@@ -19,21 +19,22 @@ class PythonFunction:
         """ Generate the function with housekeeping inserted for introspection """
         newLines = list([self.header]+self.body)
         for i in range(len(self.body)+1):
-            leadingWhitespace = self.getLeadingWhitespaceForLine(i+1)
+            leadingWhitespace = self.getLeadingWhitespaceForLine(i)
             housekeepingLines = houseKeepingGenerator(i+1)
             newIndex = i+1+len(housekeepingLines)*i
             newLines[newIndex:newIndex] = [leadingWhitespace+line for line in housekeepingLines]
+            
         newLines[0] = self.buildHeaderWithHousekeeping()
+        newLines = [line.replace('\t', '    ') for line in newLines]
         return newLines
         
     def getLeadingWhitespaceForLine(self, index):
         """ Return the leading whitespace for the given line index """
-        index = index-1
         if index < len(self.body):
             line = self.body[index]
             leadingWhitespace = line[:len(line)-len(line.lstrip())]
         else:
-            leadingWhitespace = "\t"
+            leadingWhitespace = "    "
         return leadingWhitespace
         
     def buildHeaderWithHousekeeping(self):

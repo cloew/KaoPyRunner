@@ -53,7 +53,7 @@ class PythonRunner:
         """ Generate the housekeeping lines for the current line """
         return ["__variables__ = {}", 
                 "for __var_name__ in [__var_name__ for __var_name__ in dir() if __var_name__ not in ['__runner__', '__var_name__', '__variables__']]:",
-                "\t__variables__[__var_name__]=eval(__var_name__)",
+                "    __variables__[__var_name__]=eval(__var_name__)",
                 "__runner__.storeState({0}, __variables__)".format(lineNumber)]
         
     def storeState(self, lineNumber, variables):

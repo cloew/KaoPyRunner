@@ -6,5 +6,6 @@ setup(name='kao_pyrunner',
       author='Chris Loew',
       author_email='cloew123@gmail.com',
       #url='http://www.python.org/sigs/distutils-sig/',
-      packages=['kao_pyrunner', 'kao_pyrunner/FunctionFinder', 'kao_pyrunner/Runner'],
+      py_modules = ['kao_pyrunner', 'kao_pyrunner.__init__'],
+      packages=['kao_pyrunner/FunctionFinder', 'kao_pyrunner/Runner'],
      )

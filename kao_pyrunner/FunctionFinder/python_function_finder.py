@@ -15,16 +15,17 @@ class PythonFunctionFinder:
     def findStartOfFunction(self, lines, row):
         """ Return the line number of the start of the function """
         currentRow = row
-        currentLine = lines[currentRow]
-        startingLeadingWhitespace = findStartingWhitespace(currentLine)
+        startingLine = lines[currentRow]
+        currentLine = startingLine
+        
         
         while currentRow > 0 and not currentLine.lstrip().startswith("def "):
             currentRow = currentRow-1
             currentLine = lines[currentRow]
             
-        currentLeadingWhitespace = findStartingWhitespace(currentLine)
         
-        if currentLine.lstrip().startswith("def ") and len(currentLeadingWhitespace) < len(startingLeadingWhitespace):
+        
+        if self.withinFunction(currentLine, startingLine):
             return currentRow
         else:
             return None
@@ -42,3 +43,10 @@ class PythonFunctionFinder:
                 break
         
         return endOfFunction
+        
+    def withinFunction(self, currentLine, startingLine):
+        """ Return if within a function """
+        startingLeadingWhitespace = findStartingWhitespace(startingLine)
+        currentLeadingWhitespace = findStartingWhitespace(currentLine)
+        
+        return currentLine.lstrip().startswith("def ") and (len(currentLeadingWhitespace) < len(startingLeadingWhitespace) or currentLine == startingLine)

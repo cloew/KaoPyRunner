@@ -1,4 +1,4 @@
-from FunctionFinder.python_function_finder import PythonFunctionFinder
+from kao_pyrunner.FunctionFinder.python_function_finder import PythonFunctionFinder
 
 import unittest
 

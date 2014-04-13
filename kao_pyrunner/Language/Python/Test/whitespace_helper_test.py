@@ -1,4 +1,4 @@
-from Language.Python.whitespace_helper import findStartingWhitespace
+from kao_pyrunner.Language.Python.whitespace_helper import findStartingWhitespace
 
 import unittest
 

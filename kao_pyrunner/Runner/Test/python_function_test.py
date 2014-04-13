@@ -1,4 +1,4 @@
-from Runner.python_function import PythonFunction
+from kao_pyrunner.Runner.python_function import PythonFunction
 
 import unittest
 

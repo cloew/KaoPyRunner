@@ -1,3 +1,4 @@
+from kao_pyrunner.Language.Python.whitespace_helper import findStartingWhitespace
 
 class PythonFunction:
     """ Represents a Python function """
@@ -32,7 +33,7 @@ class PythonFunction:
         """ Return the leading whitespace for the given line index """
         if index < len(self.body):
             line = self.body[index]
-            leadingWhitespace = line[:len(line)-len(line.lstrip())]
+            leadingWhitespace = findStartingWhitespace(line)
         else:
             leadingWhitespace = "    "
         return leadingWhitespace

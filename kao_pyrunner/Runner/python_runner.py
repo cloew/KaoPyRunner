@@ -1,4 +1,4 @@
-from .python_function import PythonFunction
+from kao_pyrunner.Runner.python_function import PythonFunction
 
 class PythonRunner:
     """ Represents a runner of a Python class """

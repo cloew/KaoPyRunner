@@ -1,4 +1,4 @@
-from Runner.python_runner import PythonRunner
+from kao_pyrunner.Runner.python_runner import PythonRunner
 
 import unittest
 

@@ -14,7 +14,7 @@ class PythonRunner:
         
     def processFunction(self):
         """ Processes the given function """
-        lastLineNumber, returnValue = self.runFunction()
+        lastLineNumber, returnValue, error = self.runFunction()
             
         results = {}
         for lineNumber in self.functionStates:
@@ -25,7 +25,11 @@ class PythonRunner:
                     results[lineNumber] += variableStatement
                 else:
                     results[lineNumber] = variableStatement
-        results[lastLineNumber] = ["return {0}".format(self.getValue(returnValue))]
+                
+        if error is not None:
+            results[lastLineNumber] = ["{0}".format(error)]
+        else:
+            results[lastLineNumber] = ["return {0}".format(self.getValue(returnValue))]
         return results
         
     def runFunction(self):
@@ -34,9 +38,12 @@ class PythonRunner:
         wholeFunction = "\n".join(newLines)
         callFunctionString = self.getFunctionCallString()
         
-        exec(wholeFunction)
-        exec(callFunctionString)
-        return self.lineNumber, returnValue
+        try:            
+            exec(wholeFunction)
+            exec(callFunctionString)
+        except Exception as error:
+            return self.lineNumber, None, error
+        return self.lineNumber, returnValue, None
         
     def getFunctionCallString(self):
         """ Return the Function Call String """

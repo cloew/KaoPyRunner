@@ -16,6 +16,7 @@ MULTI_VARS_METHOD = ["def testMethod():", "\ti,j=(0,1)"]
 SINGLE_ARG_METHOD = ["def testMethod(i):", "\ti+=2"]
 MULTIPLE_ARGS_METHOD = ["def testMethod(i, j):", "\ti+=2"]
 MIXED_WHITESPACE_METHOD = ["def testMethod():", "\tif True:", "\t    return 2", "\t", "    return None"]
+EXCEPTION_METHOD = ["def testMethod():", "\ti=1", "\ti=2", "\t", "\traise Exception('My Exception')"]
 
 class processFunction(unittest.TestCase):
     """ Test cases of processFunction """
@@ -130,13 +131,24 @@ class processFunction(unittest.TestCase):
             results = self.runner.processFunction()
         except IndentationError as error:
             self.fail('An Indentation Error should not have occured')
+            
+    def handlesException(self):
+        """ Test that the function Prcessor can handle raised Exceptions within the function """
+        self.runner = PythonRunner(EXCEPTION_METHOD)
+        results = None
+        try:
+            results = self.runner.processFunction()
+        except IndentationError as error:
+            self.fail('An Indentation Error should not have occured')
+            
+        self.assertEquals(['My Exception'], results[4]) 
 
 # Collect all test cases in this class
 testcasesProcessFunction = ["handleArguments_NoArguments", "handleArguments_SingleArgument", "handleArguments_MultipleArguments",
                             "handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations", "handlesVariables_StringValue",
                             "handlesVariables_Modification", "handlesVariables_Multiple",
                             "handlesReturnValue_Default", "handlesReturnValue_Explicit", "handlesReturnValue_String", "handlesReturnValue_MultiLine", "handlesReturnValue_EarlyReturn",
-                            "handlesMixedWhitespace"]
+                            "handlesMixedWhitespace", "handlesException"]
 suiteProcessFunction = unittest.TestSuite(map(processFunction, testcasesProcessFunction))
 
 ##########################################################

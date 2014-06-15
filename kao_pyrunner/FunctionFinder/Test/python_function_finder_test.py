@@ -3,6 +3,8 @@ from kao_pyrunner.FunctionFinder.python_function_finder import PythonFunctionFin
 import unittest
 
 TEST_METHOD = ["", "def testMethod():", "\tif True:", "\t\treturn 2", "\t", "\treturn None", "\t", ""]
+NO_METHOD = ["", ""]
+NO_BODY = []
 
 class findFunction(unittest.TestCase):
     """ Test cases of findFunction """
@@ -11,8 +13,20 @@ class findFunction(unittest.TestCase):
         """ Build the Function Finder for the test """
         self.finder = PythonFunctionFinder()
         
+    def noLines(self):
+        """ Test that it returns None when there are not lines in the body at all """
+        function = self.finder.findFunction(NO_BODY, 0, 0)
+        
+        self.assertIs(None, function, 'The function should be None when there is no function body')
+        
+    def noFunction(self):
+        """ Test that it returns None when there is no function """
+        function = self.finder.findFunction(NO_METHOD, 0, 0)
+        
+        self.assertIs(None, function, 'The function should be None when there is no function body')
+        
     def beforeFunction(self):
-        """ Test that it returns None when vbefore a function """
+        """ Test that it returns None when before a function """
         function = self.finder.findFunction(TEST_METHOD, 0, 0)
         
         self.assertIs(None, function, 'The function should be None when not actually within a function body')
@@ -38,7 +52,7 @@ class findFunction(unittest.TestCase):
         self.assertIs(None, function, 'The function should not be None when within a function body')
 
 # Collect all test cases in this class
-testcasesFindFunction = ["beforeFunction", "inFunction", "onFunctionDeclaration", "afterFunction"]
+testcasesFindFunction = ["noLines", "noFunction", "beforeFunction", "inFunction", "onFunctionDeclaration", "afterFunction"]
 suiteFindFunction = unittest.TestSuite(map(findFunction, testcasesFindFunction))
 
 ##########################################################

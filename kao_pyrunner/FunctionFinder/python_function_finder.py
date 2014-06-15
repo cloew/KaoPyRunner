@@ -5,6 +5,9 @@ class PythonFunctionFinder:
     
     def findFunction(self, lines, row, column):
         """ Return the function for the current row and column in the given lines """
+        if len(lines) == 0:
+            return None
+        
         startOfFunction = self.findStartOfFunction(lines, row)
         if startOfFunction is None:
             return None

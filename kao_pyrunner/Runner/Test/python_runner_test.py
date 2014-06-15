@@ -1,5 +1,6 @@
 from kao_pyrunner.Runner.python_runner import PythonRunner
 
+import os
 import unittest
 
 EMPTY_METHOD = ["def testMethod():", "\tpass"]
@@ -18,8 +19,8 @@ MULTIPLE_ARGS_METHOD = ["def testMethod(i, j):", "\ti+=2"]
 MIXED_WHITESPACE_METHOD = ["def testMethod():", "\tif True:", "\t    return 2", "\t", "    return None"]
 EXCEPTION_METHOD = ["def testMethod():", "\ti=1", "\ti=2", "\t", "\traise Exception('My Exception')"]
 
-MULTI_METHOD_BODY = ["def otherMethod():", "\treturn 2", "",
-                     "def testMethod():", "\ti=otherMethod()"]
+MULTI_METHOD_BODY = ["def otherMethod():", "\treturn 2", "", "def testMethod():", "\ti=otherMethod()"]
+IMPORT_METHOD = ["import os", "", "def testMethod():", "\ti=os.getcwd()"]
 
 class processFunction(unittest.TestCase):
     """ Test cases of processFunction """
@@ -30,6 +31,13 @@ class processFunction(unittest.TestCase):
         results = self.runner.processFunction()
         
         self.assertEquals(["i = 2"], results[1], "Should have the proper variable statement")
+        
+    def handleModuleReferences(self):
+        """ Handle Module references """
+        self.runner = PythonRunner(IMPORT_METHOD, (2,4))
+        results = self.runner.processFunction()
+        
+        self.assertEquals(["i = '{0}'".format(os.getcwd())], results[1], "Should have the proper variable statement")
     
     def handleArguments_NoArguments(self):
         """ Test that no argument values works properly. Smoke Test mostly """
@@ -154,7 +162,7 @@ class processFunction(unittest.TestCase):
         self.assertEquals(['My Exception'], results[4]) 
 
 # Collect all test cases in this class
-testcasesProcessFunction = ["handleExternalFunctionCalls",
+testcasesProcessFunction = ["handleExternalFunctionCalls", "handleModuleReferences",
                             "handleArguments_NoArguments", "handleArguments_SingleArgument", "handleArguments_MultipleArguments",
                             "handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations", "handlesVariables_StringValue",
                             "handlesVariables_Modification", "handlesVariables_Multiple",

@@ -18,8 +18,18 @@ MULTIPLE_ARGS_METHOD = ["def testMethod(i, j):", "\ti+=2"]
 MIXED_WHITESPACE_METHOD = ["def testMethod():", "\tif True:", "\t    return 2", "\t", "    return None"]
 EXCEPTION_METHOD = ["def testMethod():", "\ti=1", "\ti=2", "\t", "\traise Exception('My Exception')"]
 
+MULTI_METHOD_BODY = ["def otherMethod():", "\treturn 2", "",
+                     "def testMethod():", "\ti=otherMethod()"]
+
 class processFunction(unittest.TestCase):
     """ Test cases of processFunction """
+    
+    def handleExternalFunctionCalls(self):
+        """ Handle External function calls """
+        self.runner = PythonRunner(MULTI_METHOD_BODY, (3,5))
+        results = self.runner.processFunction()
+        
+        self.assertEquals(["i = 2"], results[1], "Should have the proper variable statement")
     
     def handleArguments_NoArguments(self):
         """ Test that no argument values works properly. Smoke Test mostly """
@@ -144,7 +154,8 @@ class processFunction(unittest.TestCase):
         self.assertEquals(['My Exception'], results[4]) 
 
 # Collect all test cases in this class
-testcasesProcessFunction = ["handleArguments_NoArguments", "handleArguments_SingleArgument", "handleArguments_MultipleArguments",
+testcasesProcessFunction = ["handleExternalFunctionCalls",
+                            "handleArguments_NoArguments", "handleArguments_SingleArgument", "handleArguments_MultipleArguments",
                             "handlesVariables_Initialization", "handlesVariables_MultiLineInitialization", "handlesVariables_MultipleInitializations", "handlesVariables_StringValue",
                             "handlesVariables_Modification", "handlesVariables_Multiple",
                             "handlesReturnValue_Default", "handlesReturnValue_Explicit", "handlesReturnValue_String", "handlesReturnValue_MultiLine", "handlesReturnValue_EarlyReturn",

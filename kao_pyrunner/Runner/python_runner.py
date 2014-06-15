@@ -1,10 +1,20 @@
 from kao_pyrunner.Runner.python_function import PythonFunction
 
+import sys
+
+runner = None
+
 class PythonRunner:
     """ Represents a runner of a Python class """
     
-    def __init__(self, functionLines, parameters=[]):
+    def __init__(self, bodyLines, functionStartAndStop=None, parameters=[]):
         """ Initialize the Python Runner """
+        self.bodyLines = bodyLines
+        self.functionCoordinates = functionStartAndStop
+        
+        functionLines = bodyLines
+        if functionStartAndStop is not None:
+            functionLines = bodyLines[functionStartAndStop[0]:functionStartAndStop[1]]
         self.function = PythonFunction(functionLines)
         
         self.previousState = None
@@ -34,23 +44,25 @@ class PythonRunner:
         
     def runFunction(self):
         """ Run the function """
-        newLines = self.function.generateFunctionWithHouseKeeping(self.generateHousekeepingLines)
-        wholeFunction = "\n".join(newLines)
-        callFunctionString = self.getFunctionCallString()
+        newFunctionLines = self.function.generateFunctionWithHouseKeeping(self.generateHousekeepingLines)
+        if self.functionCoordinates is None:
+            newLines = newFunctionLines
+        else:
+            newLines = list(self.bodyLines)
+            newLines[self.functionCoordinates[0]:self.functionCoordinates[1]] = newFunctionLines
         
-        try:            
-            exec(wholeFunction)
-            exec(callFunctionString)
-        except Exception as error:
-            return self.lineNumber, None, error
-        return self.lineNumber, returnValue, None
+        callFunctionString = self.getFunctionCallString()
+        newLines.append(callFunctionString)
+        runnableBody = "\n".join(newLines)
+        
+        return runMethod(runnableBody, self)
         
     def getFunctionCallString(self):
         """ Return the Function Call String """
         if self.function.needsArguments():
-            return "returnValue = {0}({1}, self)".format(self.function.name, self.getFunctionParameterString())
+            return "returnValue = {0}({1}, runner)".format(self.function.name, self.getFunctionParameterString())
         else:
-            return "returnValue = {0}(self)".format(self.function.name)
+            return "returnValue = {0}(runner)".format(self.function.name)
         
     def getFunctionParameterString(self):
         """ Return the Function Parameter String """
@@ -78,3 +90,13 @@ class PythonRunner:
         if type(value) == str:
             value = "'{0}'".format(value)
         return value
+
+def runMethod(runnableBody, currentRunner):
+    global runner
+    runner = currentRunner
+    
+    try: 
+        exec runnableBody in sys.modules[__name__].__dict__
+    except Exception as error:
+        return runner.lineNumber, None, error
+    return runner.lineNumber, returnValue, None

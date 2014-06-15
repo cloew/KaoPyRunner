@@ -10,7 +10,7 @@ class PythonFunctionFinder:
             return None
             
         endOfFunction = self.findEndOfFunction(lines, startOfFunction)
-        return lines[startOfFunction:endOfFunction]
+        return startOfFunction, endOfFunction
         
     def findStartOfFunction(self, lines, row):
         """ Return the line number of the start of the function """

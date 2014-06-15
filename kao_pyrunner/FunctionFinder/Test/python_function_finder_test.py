@@ -22,14 +22,14 @@ class findFunction(unittest.TestCase):
         function = self.finder.findFunction(TEST_METHOD, 1, 0)
         
         self.assertIsNot(None, function, 'The function should not be None when on the function declaration')
-        self.assertEquals(TEST_METHOD[1:7], function, 'The function should contain the proper lines')
+        self.assertEquals((1,7), function, 'The function should contain the proper lines')
         
     def inFunction(self):
         """ Test that it returns the proper lines when in a function """
         function = self.finder.findFunction(TEST_METHOD, 3, 0)
         
         self.assertIsNot(None, function, 'The function should not be None when within a function body')
-        self.assertEquals(TEST_METHOD[1:7], function, 'The function should contain the proper lines')
+        self.assertEquals((1,7), function, 'The function should contain the proper lines')
         
     def afterFunction(self):
         """ Test that it returns None when after a function """

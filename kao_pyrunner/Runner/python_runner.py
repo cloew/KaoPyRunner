@@ -1,8 +1,5 @@
 from kao_pyrunner.Runner.python_function import PythonFunction
-
-import sys
-
-runner = None
+from kao_pyrunner.Runner.runner import RunMethod
 
 class PythonRunner:
     """ Represents a runner of a Python class """
@@ -55,7 +52,7 @@ class PythonRunner:
         newLines.append(callFunctionString)
         runnableBody = "\n".join(newLines)
         
-        return runMethod(runnableBody, self)
+        return RunMethod(runnableBody, self)
         
     def getFunctionCallString(self):
         """ Return the Function Call String """
@@ -90,13 +87,3 @@ class PythonRunner:
         if type(value) == str:
             value = "'{0}'".format(value)
         return value
-
-def runMethod(runnableBody, currentRunner):
-    global runner
-    runner = currentRunner
-    
-    try: 
-        exec runnableBody in sys.modules[__name__].__dict__
-    except Exception as error:
-        return runner.lineNumber, None, error
-    return runner.lineNumber, returnValue, None
